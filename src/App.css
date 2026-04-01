@@ -1690,6 +1690,7 @@ a {
 .catalog-detail__viewer {
   position: absolute;
   inset: 0;
+  touch-action: pan-y;
 }
 
 .catalog-detail__hero {
@@ -1700,15 +1701,37 @@ a {
   display: block;
 }
 
-.catalog-detail__arrow {
+.catalog-detail__hit-zone {
   position: absolute;
-  top: 50%;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+}
+
+.catalog-detail__hit-zone--prev {
+  left: 0;
+  justify-content: flex-start;
+  padding-left: 1.1rem;
+}
+
+.catalog-detail__hit-zone--next {
+  right: 0;
+  justify-content: flex-end;
+  padding-right: 1.1rem;
+}
+
+.catalog-detail__arrow {
   width: 2.2rem;
   height: 2.2rem;
   border: 1px solid rgba(243, 19, 19, 0.82);
   background: rgba(243, 19, 19, 0.9);
-  cursor: pointer;
-  transform: translateY(-50%);
   display: grid;
   place-items: center;
   transition:
@@ -1718,20 +1741,16 @@ a {
   z-index: 4;
 }
 
-.catalog-detail__arrow--prev {
-  left: 1.1rem;
-}
-
-.catalog-detail__arrow--next {
-  right: 1.1rem;
-}
-
-.catalog-detail__arrow:hover,
-.catalog-detail__arrow:focus-visible {
+.catalog-detail__hit-zone:hover .catalog-detail__arrow,
+.catalog-detail__hit-zone:focus-visible .catalog-detail__arrow {
   outline: none;
   border-color: rgba(243, 19, 19, 1);
   background: rgba(191, 12, 12, 0.98);
-  transform: translateY(-50%) scale(1.04);
+  transform: scale(1.04);
+}
+
+.catalog-detail__hit-zone:focus-visible {
+  outline: none;
 }
 
 .catalog-detail__arrow-mark {
@@ -1820,6 +1839,7 @@ a {
   display: grid;
   gap: 0.9rem;
   padding: 0;
+  min-width: 0;
 }
 
 .catalog-detail__type {
@@ -1835,6 +1855,7 @@ a {
   letter-spacing: 0.01em;
   color: rgba(255, 255, 255, 0.9);
   text-shadow: 0 0.08rem 0.35rem rgba(0, 0, 0, 0.24);
+  overflow-wrap: anywhere;
 }
 
 .catalog-detail__specs {
@@ -1859,6 +1880,7 @@ a {
   font: 0.82rem/1.5 var(--mono);
   color: rgba(255, 255, 255, 0.92);
   text-shadow: 0 0.08rem 0.35rem rgba(0, 0, 0, 0.24);
+  overflow-wrap: anywhere;
 }
 
 .catalog-detail__empty {
@@ -3147,17 +3169,17 @@ a {
     left: 0.8rem;
   }
 
+  .catalog-detail__hit-zone--prev {
+    padding-left: 0.8rem;
+  }
+
+  .catalog-detail__hit-zone--next {
+    padding-right: 0.8rem;
+  }
+
   .catalog-detail__arrow {
     width: 1.95rem;
     height: 1.95rem;
-  }
-
-  .catalog-detail__arrow--prev {
-    left: 0.8rem;
-  }
-
-  .catalog-detail__arrow--next {
-    right: 0.8rem;
   }
 
   .catalog-detail__counter {
@@ -3168,9 +3190,23 @@ a {
   }
 
   .catalog-detail__footer {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr) minmax(10.5rem, 42vw);
     gap: 0.65rem;
     padding: 1rem 0.85rem 0.85rem;
+    align-items: end;
+  }
+
+  .catalog-detail__header {
+    align-self: end;
+    min-width: 0;
+  }
+
+  .catalog-detail__info {
+    gap: 0.55rem;
+    padding: 0.7rem 0.75rem;
+    border: 1px solid rgba(255, 211, 56, 0.18);
+    background: rgba(0, 0, 0, 0.28);
+    backdrop-filter: blur(10px);
   }
 
   .catalog-detail__eyebrow,
@@ -3183,18 +3219,22 @@ a {
   }
 
   .catalog-detail__description {
-    max-width: 34ch;
-    font-size: 0.78rem;
-    line-height: 1.5;
+    max-width: none;
+    font-size: 0.72rem;
+    line-height: 1.45;
   }
 
   .catalog-detail__specs {
     grid-template-columns: 1fr;
-    gap: 0.7rem;
+    gap: 0.55rem;
+  }
+
+  .catalog-detail__specs dt {
+    font-size: 0.58rem;
   }
 
   .catalog-detail__specs dd {
-    font-size: 0.76rem;
+    font-size: 0.68rem;
   }
 
   .projects-album__footer {
@@ -3594,13 +3634,41 @@ a {
     height: 1.75rem;
   }
 
+  .catalog-detail__hit-zone--prev {
+    padding-left: 0.75rem;
+  }
+
+  .catalog-detail__hit-zone--next {
+    padding-right: 0.75rem;
+  }
+
+  .catalog-detail__footer {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+    padding: 0.85rem 0.75rem calc(0.78rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  .catalog-detail__info {
+    width: min(100%, 18rem);
+    justify-self: end;
+    padding: 0.62rem 0.68rem;
+  }
+
   .catalog-detail__header h1 {
     font-size: clamp(1.55rem, 8vw, 2.2rem);
   }
 
   .catalog-detail__description {
     max-width: none;
-    font-size: 0.74rem;
+    font-size: 0.68rem;
+  }
+
+  .catalog-detail__specs dt {
+    font-size: 0.54rem;
+  }
+
+  .catalog-detail__specs dd {
+    font-size: 0.64rem;
   }
 
   .catalog-detail__counter {
