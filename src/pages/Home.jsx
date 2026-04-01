@@ -312,7 +312,6 @@ function Home() {
       </section>
 
       <footer className="home__contact" aria-label="Datos de contacto">
-        <span className="home__contact-label">Contacto</span>
         <p>
           Felipe Cal 093 712 138 / Micaela Andrada 091 985 171
         </p>
