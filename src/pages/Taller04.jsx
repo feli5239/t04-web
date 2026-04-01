@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import tallerImage01 from '../assets/brand/hover/taller04-01.jpg'
 import tallerImage02 from '../assets/brand/hover/taller04-02.jpg'
 import tallerImage03 from '../assets/brand/hover/taller04-03.jpg'
@@ -26,7 +26,6 @@ const accessCards = [
 ]
 
 function Taller04() {
-  const location = useLocation()
   const navigate = useNavigate()
   const [activeSlide, setActiveSlide] = useState(0)
 
@@ -39,17 +38,6 @@ function Taller04() {
   }, [])
 
   const handleBack = () => {
-    const historyIndex =
-      typeof window !== 'undefined' &&
-      typeof window.history.state?.idx === 'number'
-        ? window.history.state.idx
-        : 0
-
-    if (historyIndex > 0 || location.key !== 'default') {
-      navigate(-1)
-      return
-    }
-
     navigate('/')
   }
 
