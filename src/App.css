@@ -1693,12 +1693,41 @@ a {
   touch-action: pan-y;
 }
 
+.catalog-detail__hero-stack {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
 .catalog-detail__hero {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: center;
   display: block;
+  will-change: transform, opacity;
+}
+
+.catalog-detail__hero-stack.is-animating.catalog-detail__hero-stack--next
+  .catalog-detail__hero--previous {
+  animation: catalog-hero-exit-next 420ms var(--ease-smooth) both;
+}
+
+.catalog-detail__hero-stack.is-animating.catalog-detail__hero-stack--next
+  .catalog-detail__hero--current {
+  animation: catalog-hero-enter-next 420ms var(--ease-smooth) both;
+}
+
+.catalog-detail__hero-stack.is-animating.catalog-detail__hero-stack--prev
+  .catalog-detail__hero--previous {
+  animation: catalog-hero-exit-prev 420ms var(--ease-smooth) both;
+}
+
+.catalog-detail__hero-stack.is-animating.catalog-detail__hero-stack--prev
+  .catalog-detail__hero--current {
+  animation: catalog-hero-enter-prev 420ms var(--ease-smooth) both;
 }
 
 .catalog-detail__hit-zone {
@@ -2729,6 +2758,54 @@ a {
 
   to {
     opacity: 1;
+  }
+}
+
+@keyframes catalog-hero-enter-next {
+  from {
+    opacity: 0.92;
+    transform: translate3d(14%, 0, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes catalog-hero-exit-next {
+  from {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    opacity: 0.92;
+    transform: translate3d(-14%, 0, 0);
+  }
+}
+
+@keyframes catalog-hero-enter-prev {
+  from {
+    opacity: 0.92;
+    transform: translate3d(-14%, 0, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes catalog-hero-exit-prev {
+  from {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    opacity: 0.92;
+    transform: translate3d(14%, 0, 0);
   }
 }
 
@@ -3857,7 +3934,8 @@ a {
 
   .home__nav-circle,
   .home__burst,
-  .taller-landing__image {
+  .taller-landing__image,
+  .catalog-detail__hero {
     animation: none;
     transition: none;
   }

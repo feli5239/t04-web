@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import {
   getCatalogProductById,
@@ -6,6 +6,7 @@ import {
 } from '../data/tallerCatalog'
 
 const SWIPE_THRESHOLD = 44
+const IMAGE_TRANSITION_MS = 420
 
 function TallerCatalogoDetalle() {
   const location = useLocation()
@@ -13,7 +14,11 @@ function TallerCatalogoDetalle() {
   const { productId } = useParams()
   const product = getCatalogProductById(productId ?? '')
   const [activeImageIndex, setActiveImageIndex] = useState(0)
+  const [previousImageIndex, setPreviousImageIndex] = useState(null)
+  const [transitionDirection, setTransitionDirection] = useState('next')
+  const [transitionToken, setTransitionToken] = useState(0)
   const touchStartXRef = useRef(null)
+  const transitionTimeoutRef = useRef(null)
 
   const handleBack = () => {
     const historyIndex =
@@ -30,14 +35,40 @@ function TallerCatalogoDetalle() {
     navigate('/taller04/catalogo')
   }
 
+  useEffect(() => {
+    return () => {
+      if (transitionTimeoutRef.current !== null) {
+        window.clearTimeout(transitionTimeoutRef.current)
+      }
+    }
+  }, [])
+
+  const moveToImage = (nextIndex, direction) => {
+    if (nextIndex === activeImageIndex) {
+      return
+    }
+
+    if (transitionTimeoutRef.current !== null) {
+      window.clearTimeout(transitionTimeoutRef.current)
+    }
+
+    setPreviousImageIndex(activeImageIndex)
+    setTransitionDirection(direction)
+    setTransitionToken((current) => current + 1)
+    setActiveImageIndex(nextIndex)
+
+    transitionTimeoutRef.current = window.setTimeout(() => {
+      setPreviousImageIndex(null)
+      transitionTimeoutRef.current = null
+    }, IMAGE_TRANSITION_MS)
+  }
+
   const handlePrevImage = () => {
-    setActiveImageIndex((current) =>
-      current === 0 ? product.gallery.length - 1 : current - 1,
-    )
+    moveToImage(activeImageIndex === 0 ? product.gallery.length - 1 : activeImageIndex - 1, 'prev')
   }
 
   const handleNextImage = () => {
-    setActiveImageIndex((current) => (current + 1) % product.gallery.length)
+    moveToImage((activeImageIndex + 1) % product.gallery.length, 'next')
   }
 
   const handleTouchStart = (event) => {
@@ -119,11 +150,30 @@ function TallerCatalogoDetalle() {
           onTouchEnd={handleTouchEnd}
           onTouchCancel={handleTouchCancel}
         >
-          <img
-            className="catalog-detail__hero"
-            src={product.gallery[activeImageIndex]}
-            alt={product.name}
-          />
+          <div
+            className={`catalog-detail__hero-stack${
+              previousImageIndex !== null
+                ? ` is-animating catalog-detail__hero-stack--${transitionDirection}`
+                : ''
+            }`}
+          >
+            {previousImageIndex !== null ? (
+              <img
+                key={`previous-${previousImageIndex}-${transitionToken}`}
+                className="catalog-detail__hero catalog-detail__hero--previous"
+                src={product.gallery[previousImageIndex]}
+                alt=""
+                aria-hidden="true"
+              />
+            ) : null}
+
+            <img
+              key={`current-${activeImageIndex}-${transitionToken}`}
+              className="catalog-detail__hero catalog-detail__hero--current"
+              src={product.gallery[activeImageIndex]}
+              alt={product.name}
+            />
+          </div>
 
           {product.gallery.length > 1 ? (
             <>
