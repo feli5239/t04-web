@@ -2101,10 +2101,19 @@ a {
 .survey-page__field select {
   width: 100%;
   border: 1px solid rgba(243, 19, 19, 0.14);
-  background: rgba(255, 251, 239, 0.92);
+  appearance: none;
+  -webkit-appearance: none;
+  border-radius: 0;
+  background: rgba(255, 251, 239, 0.98);
   padding: 0.8rem 0.85rem;
   font: 0.84rem/1.55 var(--mono);
-  color: rgba(17, 17, 17, 0.76);
+  color: rgba(17, 17, 17, 0.92);
+  -webkit-text-fill-color: rgba(17, 17, 17, 0.92);
+  caret-color: var(--brand-red);
+  text-shadow: none;
+  opacity: 1;
+  position: relative;
+  z-index: 1;
   outline: none;
   transition:
     border-color 160ms ease,
@@ -2117,12 +2126,26 @@ a {
 .survey-page__field select:focus {
   border-color: rgba(243, 19, 19, 0.48);
   box-shadow: 0 0 0 1px rgba(243, 19, 19, 0.1);
-  background: rgba(255, 255, 255, 0.96);
+  background: rgba(255, 255, 255, 1);
 }
 
 .survey-page__field textarea {
   resize: vertical;
   min-height: 7rem;
+}
+
+.survey-page__field input::placeholder,
+.survey-page__field textarea::placeholder {
+  color: rgba(17, 17, 17, 0.46);
+  -webkit-text-fill-color: rgba(17, 17, 17, 0.46);
+}
+
+.survey-page__field input:-webkit-autofill,
+.survey-page__field textarea:-webkit-autofill,
+.survey-page__field select:-webkit-autofill {
+  -webkit-text-fill-color: rgba(17, 17, 17, 0.92);
+  box-shadow: 0 0 0 1000px rgba(255, 251, 239, 0.98) inset;
+  transition: background-color 9999s ease-in-out 0s;
 }
 
 .survey-page__hint {
@@ -3263,7 +3286,7 @@ a {
   .survey-page__field textarea,
   .survey-page__field select {
     padding: 0.72rem 0.75rem;
-    font-size: 0.78rem;
+    font-size: 16px;
     line-height: 1.45;
   }
 
@@ -3466,7 +3489,7 @@ a {
     --cosas-pad-x: 0.65rem;
     --cosas-pad-top: 2.95rem;
     --cosas-pad-bottom: 0.8rem;
-    --cosas-cell: calc((100vw - (var(--cosas-pad-x) * 2)) / 2);
+    --cosas-cell: calc((100vw - (var(--cosas-pad-x) * 2)) / 3);
   }
 
   .cosas-page__axis {
@@ -3474,16 +3497,19 @@ a {
   }
 
   .cosas-page__grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .cosas-page__search {
-    grid-column: 1 / -1;
+    grid-column: span 2;
   }
 
-  .cosas-page__filters-toggle,
-  .cosas-page__results {
+  .cosas-page__filters-toggle {
     grid-column: span 1;
+  }
+
+  .cosas-page__results {
+    grid-column: 1 / -1;
   }
 
   .cosas-page__tile-kicker,

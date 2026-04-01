@@ -6,6 +6,8 @@ import {
   normalizeCosasText,
 } from '../data/cosasCatalog'
 
+const COMPACT_COLUMNS_QUERY = '(max-width: 900px)'
+
 function Cosas04Catalog() {
   const location = useLocation()
   const navigate = useNavigate()
@@ -19,6 +21,13 @@ function Cosas04Catalog() {
   const deferredQuery = useDeferredValue(query)
   const closeTimerRef = useRef(null)
   const previewScrollRef = useRef(null)
+  const [columnCount, setColumnCount] = useState(() => {
+    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
+      return 4
+    }
+
+    return window.matchMedia(COMPACT_COLUMNS_QUERY).matches ? 3 : 4
+  })
   const normalizedQuery = normalizeCosasText(deferredQuery.trim())
 
   const filteredProjects = cosasCatalogProjects.filter((project) => {
@@ -59,6 +68,29 @@ function Cosas04Catalog() {
         window.clearTimeout(closeTimerRef.current)
       }
     }
+  }, [])
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
+      return undefined
+    }
+
+    const mediaQuery = window.matchMedia(COMPACT_COLUMNS_QUERY)
+    const syncColumns = () => {
+      setColumnCount(mediaQuery.matches ? 3 : 4)
+    }
+
+    syncColumns()
+
+    if (typeof mediaQuery.addEventListener === 'function') {
+      mediaQuery.addEventListener('change', syncColumns)
+
+      return () => mediaQuery.removeEventListener('change', syncColumns)
+    }
+
+    mediaQuery.addListener(syncColumns)
+
+    return () => mediaQuery.removeListener(syncColumns)
   }, [])
 
   const handleBack = () => {
@@ -110,7 +142,6 @@ function Cosas04Catalog() {
   }
 
   const activeFilterCount = Object.values(activeFilters).filter(Boolean).length
-  const columnCount = 4
   const occupiedTopRows = 1 + (filtersOpen ? 1 : 0)
   const productRows = Math.max(1, Math.ceil(filteredProjects.length / columnCount))
   const totalRows = occupiedTopRows + productRows
